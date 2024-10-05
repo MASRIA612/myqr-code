@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title> √ﬂÌœ «·„Êﬁ⁄</title>
+</head>
+<body>
+    <script>
+        // œ«·… ·· Õﬁﬁ „‰ «·Êﬁ 
+        function checkAccessTime() {
+            const lastAccess = localStorage.getItem('lastAccess'); // «·Õ’Ê· ⁄·Ï «·Êﬁ  «·√ŒÌ— ··œŒÊ·
+            const currentTime = new Date().getTime(); // «·Êﬁ  «·Õ«·Ì
+
+            // ≈–« ﬂ«‰ Â‰«ﬂ Êﬁ  œŒÊ· ”«»ﬁ
+            if (lastAccess) {
+                const timeDifference = currentTime - lastAccess; // «·›—ﬁ »Ì‰ «·Êﬁ Ì‰
+                const twoHoursInMillis = 2 * 60 * 60 * 1000; // ”«⁄ Ì‰ »«·„Ì·Ì À«‰Ì…
+
+                // ≈–« ﬂ«‰  «·› —… √ﬁ· „‰ ”«⁄ Ì‰° ·« Ì”„Õ »«·œŒÊ·
+                if (timeDifference < twoHoursInMillis) {
+                    alert("·« Ì„ﬂ‰ﬂ «·Ê’Ê· ≈·Ï «·„Õ ÊÏ „—… √Œ—Ï ≈·« »⁄œ ”«⁄ Ì‰.");
+                    return false; // Ì„‰⁄ «·œŒÊ·
+                }
+            }
+
+            //  ÕœÌÀ Êﬁ  «·œŒÊ·
+            localStorage.setItem('lastAccess', currentTime);
+            return true; // Ì”„Õ »«·œŒÊ·
+        }
+
+        function checkLocation() {
+            if (checkAccessTime()) { //  Õﬁﬁ „‰ «·Êﬁ  ﬁ»·  ÕœÌœ «·„Êﬁ⁄
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function(position) {
+                        const userLatitude = position.coords.latitude;
+                        const userLongitude = position.coords.longitude;
+
+                        const targetLatitude = 30.1915985; // «” »œ· »«·≈Õœ«ÀÌ«  «·›⁄·Ì…
+                        const targetLongitude = 31.4412009; // «” »œ· »«·≈Õœ«ÀÌ«  «·›⁄·Ì…
+                        const distance = getDistance(userLatitude, userLongitude, targetLatitude, targetLongitude);
+
+                        if (distance < 0.1) { // 0.1 ﬂ„ = 100 „ —
+                            window.location.href = "https://docs.google.com/forms/d/e/1FAIpQLSfkw3j3H9Qwu_-Hh2iK6ALWRHQyjKrkI7oh6T384ShDyRJRnw/viewform?usp=sf_link";
+                        } else {
+                            alert("·« Ì„ﬂ‰ﬂ «·Ê’Ê· ≈·Ï «·„Õ ÊÏ Œ«—Ã «·„Êﬁ⁄ «·„Õœœ.");
+                        }
+                    });
+                } else {
+                    alert(" ÕœÌœ «·„Êﬁ⁄ €Ì— „œ⁄Ê„ ›Ì Â–« «·„ ’›Õ.");
+                }
+            }
+        }
+
+        function getDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Radius of the earth in km
+            const dLat = deg2rad(lat2 - lat1);
+            const dLon = deg2rad(lon2 - lon1);
+            const a =
+                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c; // Distance in km
+        }
+
+        function deg2rad(deg) {
+            return deg * (Math.PI / 180);
+        }
+
+        checkLocation();
+    </script>
+</body>
+</html>
